@@ -1,0 +1,22 @@
+a simple command tries to find all the files recursively.
+
+for each file
+	it remembers the relative path
+	if the file contains a metadata path replace use that path instead of above path
+	using path, generate a md file at that location
+	write header into that file
+	write jupyter cells into that file
+
+
+use case
+[] jugo path/to/input.ipynb
+    will inline images
+[] jugo path/to/input.ipynb path/to/output.md
+    will inline images
+[] jugo path/to/input.ipynb path/to/dir
+    will create a page bundle regard less if it is required or not.
+[] jugo path/to/input-dir path/to/output-dir
+    will try to find notebooks recusively and create pb regard less if it is required or not.
+    
+
+
