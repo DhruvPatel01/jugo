@@ -34,3 +34,10 @@ proc walk(source, target: string; stack: [string]) -> bool =
 			to_hugo(path, generate(path))
 
 ```
+#TODO:
+[x] convert/to_markdown implementation should check the jugo header. If not there skip.
+[x] convert/to_markdown should create a leaf node and write files there. existing images should be deleted.
+[x] handle outputs
+- [x] stream
+- [x] display_data, execute_result
+[ ] handle attachments
