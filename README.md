@@ -38,8 +38,10 @@ By default jugo uses following defaults for front matter.
 If you want to override the defaults, or add anything else you can do so by providing such data in the "jugo" metadata of the notebook.
 ```json
 "jugo": {
-    "title": "My Custom Title",
-    "date" : "2042-01-01"
+    "front_matter": {
+        "title": "My Custom Title",
+        "date" : "2042-01-01"
+    } 
 }
 ```
 
