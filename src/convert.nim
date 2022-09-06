@@ -5,6 +5,7 @@ import base64
 import oids
 import strformat
 import times
+import regex
 
 proc get_language(metadata: JsonNode): string =
     let language_info = metadata{"language_info"}
@@ -53,8 +54,36 @@ proc read_outputs(outputs: JsonNode): (string, seq[(string, string)]) =
 
     return (out_str, files)
 
+const image_reg =  re"""!\[[^\]]*\]\((.*)\)"""
 
-proc process_cell(cellNode: JsonNode; language = ""): (string, seq[(string, string)]) =
+proc extract_image(cell, dir: string): (string, seq[(string, string)]) =
+    var
+        files: seq[(string, string)] = @[]
+        out_str = ""
+        lb = 0
+
+    for match in findAll(cell, image_reg):
+        let 
+            group = match.captures[0]
+            bounds = group[0]
+            filename = cell[bounds]
+        if filename.endsWith(".png") or filename.endsWith(".jpg"):
+            let file = (if filename.startsWith('.'):
+                            joinPath(dir, filename) 
+                        else:
+                            filename).readFile
+            out_str.add(cell[lb ..< bounds.a])
+            out_str.add("images/" & filename.splitPath[1])
+            files.add((filename.splitPath[1], file))
+            lb = bounds.b + 1
+    if lb < cell.len:
+        out_str.add(cell[lb .. ^1])
+    
+    return (out_str, files)
+        
+
+
+proc process_cell(cellNode: JsonNode; dir: string, language = ""): (string, seq[(string, string)]) =
     var
         src = cellNode{"source"}.multiline_text
         out_str = ""
@@ -63,12 +92,13 @@ proc process_cell(cellNode: JsonNode; language = ""): (string, seq[(string, stri
     case cellNode["cell_type"].getStr
     of "markdown":
         out_str = src.replace(r"\", r"\\")
+        let (out_str, files1) = out_str.extract_image(dir)
+        files &= files1
     of "code":
         out_str = "```" & language & "\n" & src & "\n```\n"
         let (output, files1) = cellNode{"outputs"}.read_outputs
         files &= files1
-        if output != "":
-            out_str.add(output)
+        if output != "": out_str.add(output)
     out_str.add("\n")
 
     return (out_str, files)
@@ -81,6 +111,7 @@ proc toMarkdown*(srcPath, dstDir: string): bool =
         jugo_header = metadata{"jugo"}
         language = get_language(metadata)
         cells = nbformat{"cells"}
+        srcDir = srcPath.splitPath[0]
 
     if jugo_header == nil or cells == nil:
         return false
@@ -107,7 +138,7 @@ proc toMarkdown*(srcPath, dstDir: string): bool =
     output.add("\n")
 
     for cell_node in cells:
-        let (cell_out, cell_files) = process_cell(cell_node, language)
+        let (cell_out, cell_files) = process_cell(cell_node, srcDir, language)
         output.add(cell_out)
         files.add(cell_files)
 

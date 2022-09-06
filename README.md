@@ -60,7 +60,10 @@ I will definitely solve some of these issues.
 
 
 ## TODO
-
+- [x] add support for single file input.
+- [x] support for images that are not outputs of execution.
+- [x] single file output.
 - [ ] Light background for images
+- [ ] generating hierarchical list pages?
 - [ ] Support for attached images in markdown.
 - [ ] Support the dimensions of the PNG images.

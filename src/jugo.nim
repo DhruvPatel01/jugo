@@ -25,23 +25,28 @@ proc walk(srcDir, tgtDir: string; stack: var seq[string]) =
                 echo "Converted " & dir.path
 
 proc main() =
-    var srcDir, tgtDir: string
+    var src, tgtDir: string
     var nargs = 0
 
     for kind, key, val in getOpt():
         case kind
         of cmdArgument:
-            if nargs == 0: srcDir = key
+            if nargs == 0: src = key
             if nargs == 1: tgtDir = key
             nargs += 1
         else:
             discard
 
-    if srcDir == "" or tgtDir == "":
-        quit("Usage: jugo srcDir tgtDir")
+    if src == "" or tgtDir == "":
+        quit("Usage: jugo src tgtDir")
 
-    var stack = @[srcDir, ]
-    walk(srcDir, tgtDir, stack)
+    if src.isValidNotebook:
+        let res = convert.to_markdown(src, tgtDir)
+        if res: echo "Converted " & src
+        else  : echo "Failed to convert " & src & ". Make sure metadata has been edited."
+    else:
+        var stack = @[src, ]
+        walk(src, tgtDir, stack)
 
 
 
