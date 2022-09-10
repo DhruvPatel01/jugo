@@ -92,7 +92,8 @@ proc process_cell(cellNode: JsonNode; dir: string, language = ""): (string, seq[
     case cellNode["cell_type"].getStr
     of "markdown":
         out_str = src.replace(r"\", r"\\")
-        let (out_str, files1) = out_str.extract_image(dir)
+        let (out_str1, files1) = out_str.extract_image(dir)
+        out_str = out_str1
         files &= files1
     of "code":
         out_str = "```" & language & "\n" & src & "\n```\n"
