@@ -61,8 +61,9 @@ I will definitely solve some of these issues.
 
 
 ## TODO
+- [ ] Deterministic filenames for images.
+- [ ] Support for attached images in markdown.
 - [ ] Support for `\( \)` and `\[ \]` in math.
 - [ ] Light background for images
 - [ ] generating hierarchical list pages?
-- [ ] Support for attached images in markdown.
 - [ ] Support the dimensions of the PNG images.
