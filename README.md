@@ -51,6 +51,7 @@ If you want to override the defaults, or add anything else you can do so by prov
 ### Following are due to my laziness. 
 I will definitely solve some of these issues.
 
+- Only math inside $ and $$ is supported. `\( e = mc^2 \)` will not work at the moment.
 - If any directory has a dot `.` in the name, e.g. `my.folder`, the directory in the generated tree will be renamed to `my`
 - attached images are not copied. #TODO
 - PNG generated from the notebook are transparent, which do not work proper for dark backgrounded themes.
@@ -60,9 +61,7 @@ I will definitely solve some of these issues.
 
 
 ## TODO
-- [x] add support for single file input.
-- [x] support for images that are not outputs of execution.
-- [x] single file output.
+- [ ] Support for `\( \)` and `\[ \]` in math.
 - [ ] Light background for images
 - [ ] generating hierarchical list pages?
 - [ ] Support for attached images in markdown.

@@ -7,6 +7,8 @@ import strformat
 import times
 import regex
 
+import escape_math
+
 proc get_language(metadata: JsonNode): string =
     let language_info = metadata{"language_info"}
     if language_info != nil:
@@ -67,6 +69,7 @@ proc extract_image(cell, dir: string): (string, seq[(string, string)]) =
             group = match.captures[0]
             bounds = group[0]
             filename = cell[bounds]
+        if filename.startsWith("attachment:"): continue
         if filename.endsWith(".png") or filename.endsWith(".jpg"):
             let file = (if filename.startsWith('.'):
                             joinPath(dir, filename) 
@@ -91,7 +94,7 @@ proc process_cell(cellNode: JsonNode; dir: string, language = ""): (string, seq[
 
     case cellNode["cell_type"].getStr
     of "markdown":
-        out_str = src.replace(r"\", r"\\")
+        out_str = src.escape_math()
         let (out_str1, files1) = out_str.extract_image(dir)
         out_str = out_str1
         files &= files1
