@@ -58,7 +58,7 @@ proc read_outputs(outputs: JsonNode): (string, seq[(string, string)]) =
 
 const image_reg =  re"""!\[[^\]]*\]\((.*)\)"""
 
-proc extract_image(cell, dir: string): (string, seq[(string, string)]) =
+proc extract_image(cell, dir: string; attachments: JsonNode): (string, seq[(string, string)]) =
     var
         files: seq[(string, string)] = @[]
         out_str = ""
@@ -69,19 +69,25 @@ proc extract_image(cell, dir: string): (string, seq[(string, string)]) =
             group = match.captures[0]
             bounds = group[0]
             filename = cell[bounds]
-        if filename.startsWith("attachment:"): continue
+       
         if filename.endsWith(".png") or filename.endsWith(".jpg"):
-            let file = (if filename.startsWith('.'):
-                            joinPath(dir, filename) 
-                        else:
-                            filename).readFile
+            var file: string
+            if filename.startsWith("attachment:"):
+                let
+                    key = filename.replace("attachment:", "")
+                    mime = "image/" & filename.splitPath[1].splitFile[2][1..^1]
+                file =attachments[key][mime].getStr.decode
+            elif filename.startsWith('.'):
+                file = joinPath(dir, filename).readFile
+            else:
+                file = filename.readFile
+
             out_str.add(cell[lb ..< bounds.a])
             out_str.add("images/" & filename.splitPath[1])
             files.add((filename.splitPath[1], file))
             lb = bounds.b + 1
     if lb < cell.len:
         out_str.add(cell[lb .. ^1])
-    
     return (out_str, files)
         
 
@@ -95,7 +101,7 @@ proc process_cell(cellNode: JsonNode; dir: string, language = ""): (string, seq[
     case cellNode["cell_type"].getStr
     of "markdown":
         out_str = src.escape_math()
-        let (out_str1, files1) = out_str.extract_image(dir)
+        let (out_str1, files1) = out_str.extract_image(dir, cellNode{"attachments"})
         out_str = out_str1
         files &= files1
     of "code":
