@@ -53,7 +53,6 @@ I will definitely solve some of these issues.
 
 - Only math inside $ and $$ is supported. `\( e = mc^2 \)` will not work at the moment.
 - If any directory has a dot `.` in the name, e.g. `my.folder`, the directory in the generated tree will be renamed to `my`
-- attached images are not copied. #TODO
 - PNG generated from the notebook are transparent, which do not work proper for dark backgrounded themes.
 
 ### For following blame Hugo (or goldmark)
@@ -61,8 +60,8 @@ I will definitely solve some of these issues.
 
 
 ## TODO
-- [ ] Deterministic filenames for images.
-- [X] Support for attached images in markdown.
+- [x] Deterministic filenames for images.
+- [x] Support for attached images in markdown.
 - [ ] Support for `\( \)` and `\[ \]` in math.
 - [ ] Light background for images
 - [ ] generating hierarchical list pages?

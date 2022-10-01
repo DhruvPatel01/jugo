@@ -2,10 +2,10 @@ import json
 import os
 import unicode, strutils
 import base64
-import oids
 import strformat
 import times
 import regex
+import md5
 
 import escape_math
 
@@ -50,8 +50,10 @@ proc read_outputs(outputs: JsonNode): (string, seq[(string, string)]) =
                 of "text/plain":
                     out_str.add("```text\n" & v.multiline_text & "\n```\n")
                 of "image/png":
-                    let file_name = $genOid() & ".png"
-                    files.add((file_name, decode(v.getStr)))
+                    let 
+                        file = decode(v.getStr)
+                        file_name = file.getMD5 & ".png"
+                    files.add((file_name, file))
                     out_str.add(&"![output image for above cell](images/{file_name})\n")
 
     return (out_str, files)
