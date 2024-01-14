@@ -62,6 +62,7 @@ I will definitely solve some of these issues.
 ## TODO
 - [x] Deterministic filenames for images.
 - [x] Support for attached images in markdown.
+- [ ] Don't escape latex when wrapped inside HTML.
 - [ ] Support for `\( \)` and `\[ \]` in math.
 - [ ] Light background for images
 - [ ] generating hierarchical list pages?
