@@ -10,5 +10,6 @@ bin           = @["jugo"]
 
 # Dependencies
 
-requires "nim >= 1.6.6"
-requires "regex >= 0.19.0"
+requires "nim >= 2.0.0"
+requires "regex >= 0.26.0"
+requires "checksums "

@@ -9,15 +9,15 @@ import regex
 
 proc process(s: string): string =
     result = s.replace(r"\", r"\\")
-    result = result.replace(re"(?<!\\)_", r"\_")
+    result = result.replace(re2"(?<!\\)_", r"\_")
 
 
 proc escape_math*(cell_text: string): string =
-    const single_dollar_latex = re"(?<![\\\$])\$(?!\$)(.+?)(?<![\\\$])\$(?!\$)"
-    result = cell_text.replace(single_dollar_latex, (m, s) => r"$" &  s[m.group(0)[0]].process & r"$")
+    const single_dollar_latex = re2"(?<![\\\$])\$(?!\$)(.+?)(?<![\\\$])\$(?!\$)"
+    result = cell_text.replace(single_dollar_latex, (m, s) => r"$" &  s[m.group(0)] & r"$")
     
-    const double_dollar_latex = re"\$\$(?s)(.+?)\$\$"
-    result = result.replace(double_dollar_latex, (m, s) => r"$$" & s[m.group(0)[0]].process & r"$$")
+    const double_dollar_latex = re2"\$\$(?s)(.+?)\$\$"
+    result = result.replace(double_dollar_latex, (m, s) => r"$$" & s[m.group(0)] & r"$$")
 
     
     

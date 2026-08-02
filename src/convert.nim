@@ -5,7 +5,7 @@ import base64
 import strformat
 import times
 import regex
-import md5
+import checksums/md5
 
 import escape_math
 
@@ -58,7 +58,7 @@ proc read_outputs(outputs: JsonNode): (string, seq[(string, string)]) =
 
     return (out_str, files)
 
-const image_reg =  re"""!\[[^\]]*\]\((.*)\)"""
+const image_reg =  re2"""!\[[^\]]*\]\((.*)\)"""
 
 proc extract_image(cell, dir: string; attachments: JsonNode): (string, seq[(string, string)]) =
     var
@@ -68,8 +68,7 @@ proc extract_image(cell, dir: string; attachments: JsonNode): (string, seq[(stri
 
     for match in findAll(cell, image_reg):
         let 
-            group = match.captures[0]
-            bounds = group[0]
+            bounds = match.group(0)
             filename = cell[bounds]
        
         if filename.endsWith(".png") or filename.endsWith(".jpg"):
@@ -115,7 +114,7 @@ proc process_cell(cellNode: JsonNode; dir: string, language = ""): (string, seq[
 
     return (out_str, files)
 
-proc toMarkdown*(srcPath, dstDir: string): bool =
+proc toMarkdown*(srcPath, dstDir: string, forceConvert=false): bool =
     let
         nbformat = parseJson(readFile(srcPath))
         nbinfo = getFileInfo(srcPath)
@@ -125,7 +124,7 @@ proc toMarkdown*(srcPath, dstDir: string): bool =
         cells = nbformat{"cells"}
         srcDir = srcPath.splitPath[0]
 
-    if jugo_header == nil or cells == nil:
+    if (not forceConvert) and (jugo_header == nil or cells == nil):
         return false
 
     var fm: JsonNode

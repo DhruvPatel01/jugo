@@ -41,7 +41,7 @@ proc main() =
         quit("Usage: jugo src tgtDir")
 
     if src.isValidNotebook:
-        let res = convert.to_markdown(src, tgtDir)
+        let res = convert.to_markdown(src, tgtDir, forceConvert=true)
         if res: echo "Converted " & src
         else  : echo "Failed to convert " & src & ". Make sure metadata has been edited."
     else:
