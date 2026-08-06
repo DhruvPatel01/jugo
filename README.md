@@ -45,6 +45,18 @@ If you want to override the defaults, or add anything else you can do so by prov
 }
 ```
 
+## Skipping Cell Code
+
+For cell, you can add cell metadata:
+
+```
+{
+    "jugo": {
+        "skip_code": true, # skips the code of the cell, only keep the output
+        "skip": true # skip this cell altogether
+    }
+} 
+```
 
 ## Limitations
 
