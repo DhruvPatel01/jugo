@@ -55,6 +55,9 @@ proc read_outputs(outputs: JsonNode): (string, seq[(string, string)]) =
                         file_name = file.getMD5 & ".png"
                     files.add((file_name, file))
                     out_str.add(&"![output image for above cell](images/{file_name})\n")
+                of "text/html":
+                    echo "HTML"
+                    out_str.add("\n" & v.multiline_text & "\n")
 
     return (out_str, files)
 
@@ -93,11 +96,16 @@ proc extract_image(cell, dir: string; attachments: JsonNode): (string, seq[(stri
         
 
 
+
 proc process_cell(cellNode: JsonNode; dir: string, language = ""): (string, seq[(string, string)]) =
     var
         src = cellNode{"source"}.multiline_text
         out_str = ""
         files: seq[(string, string)] = @[]
+    
+    if  cellNode{"metadata"}{"jugo"}{"skip"}.getBool():
+        return (out_str, files)
+
 
     case cellNode["cell_type"].getStr
     of "markdown":
@@ -106,7 +114,10 @@ proc process_cell(cellNode: JsonNode; dir: string, language = ""): (string, seq[
         out_str = out_str1
         files &= files1
     of "code":
-        out_str = "```" & language & "\n" & src & "\n```\n"
+        if cellNode{"metadata"}{"jugo"}{"skip_code"}.getBool():
+            out_str = ""
+        else:
+            out_str = "```" & language & "\n" & src & "\n```\n"
         let (output, files1) = cellNode{"outputs"}.read_outputs
         files &= files1
         if output != "": out_str.add(output)
